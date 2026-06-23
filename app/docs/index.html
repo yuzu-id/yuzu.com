@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Upload Mini App</title>
+  <!-- SDK Resmi Telegram WebApp -->
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <!-- Header dengan data user -->
+    <div class="user-header" id="userHeader">
+      👤 <span id="userName">Pengguna</span>
+    </div>
+
+    <h1>📤 Upload ke Bot</h1>
+    <p class="subtitle">Kirim file Anda melalui bot Telegram</p>
+
+    <input type="file" id="fileInput" accept="image/*,video/*,application/pdf" />
+    <button id="uploadBtn">📨 Kirim File</button>
+    <div id="status" class="status-msg"></div>
+
+    <hr />
+
+    <h3>📋 Riwayat Upload Saya</h3>
+    <ul id="historyList">
+      <li style="color:#999; text-align:center; justify-content:center;">Belum ada upload</li>
+    </ul>
+
+    <!-- Tombol bawaan Telegram untuk menutup Mini App -->
+    <button id="closeBtn" style="margin-top: 20px; background: #dc3545;">Tutup App</button>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
