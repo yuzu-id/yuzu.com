@@ -1,0 +1,165 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: #f4f6f9;
+  padding: 20px;
+  color: #333;
+}
+
+.dashboard {
+  max-width: 1100px;
+  margin: 0 auto;
+  background: white;
+  border-radius: 20px;
+  padding: 30px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 25px;
+}
+
+header h1 {
+  font-size: 28px;
+  font-weight: 700;
+  color: #1a1a2e;
+}
+
+#lastUpdate {
+  font-size: 14px;
+  color: #888;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+.card {
+  background: #f8f9fc;
+  padding: 20px 15px;
+  border-radius: 14px;
+  text-align: center;
+  border: 1px solid #e9ecef;
+  transition: transform 0.2s;
+}
+
+.card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+.card h3 {
+  font-size: 14px;
+  font-weight: 600;
+  color: #6c757d;
+  margin-bottom: 8px;
+  letter-spacing: 0.5px;
+}
+
+.card span {
+  font-size: 32px;
+  font-weight: 700;
+  color: #1a73e8;
+  display: block;
+}
+
+.card span#botStatus {
+  font-size: 20px;
+}
+
+.chart-container {
+  background: #f8f9fc;
+  padding: 20px;
+  border-radius: 14px;
+  margin-bottom: 30px;
+  border: 1px solid #e9ecef;
+}
+
+.chart-container h3 {
+  margin-bottom: 15px;
+  font-size: 18px;
+  color: #1a1a2e;
+}
+
+.channel-status {
+  background: #f8f9fc;
+  padding: 20px;
+  border-radius: 14px;
+  border: 1px solid #e9ecef;
+}
+
+.channel-status h3 {
+  margin-bottom: 15px;
+  font-size: 18px;
+  color: #1a1a2e;
+}
+
+.channel-status ul {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+}
+
+.channel-status li {
+  background: white;
+  padding: 14px 16px;
+  border-radius: 10px;
+  border-left: 5px solid #1a73e8;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+}
+
+.channel-status li strong {
+  display: block;
+  font-size: 16px;
+  margin-bottom: 4px;
+}
+
+.channel-status li .status-badge {
+  font-size: 13px;
+  padding: 2px 10px;
+  border-radius: 20px;
+  display: inline-block;
+  background: #e9ecef;
+}
+
+.status-badge.online { background: #d4edda; color: #155724; }
+.status-badge.offline { background: #f8d7da; color: #721c24; }
+.status-badge.maintenance { background: #fff3cd; color: #856404; }
+
+button#refreshBtn {
+  width: 100%;
+  padding: 12px;
+  background: #6c757d;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+button#refreshBtn:hover {
+  opacity: 0.8;
+}
+
+/* Responsif untuk HP */
+@media (max-width: 600px) {
+  .dashboard { padding: 16px; }
+  .stats-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+  .card span { font-size: 24px; }
+  header h1 { font-size: 22px; }
+}
