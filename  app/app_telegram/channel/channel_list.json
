@@ -1,0 +1,7 @@
+[
+  { "id": "@channel1", "name": "Channel Alpha" },
+  { "id": "@channel2", "name": "Channel Beta" },
+  { "id": "@channel3", "name": "Channel Gamma" },
+  { "id": "@channel4", "name": "Channel Delta" },
+  { "id": "@channel5", "name": "Channel Epsilon" }
+]
