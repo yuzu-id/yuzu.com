@@ -3,30 +3,24 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Kirim ke Channel</title>
+  <title>Upload ke Channel</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <div class="container">
-    <h1>📤 Kirim ke Channel</h1>
-    <p class="subtitle">Klik tombol untuk mengirim video/foto ke @vvbbvvpp</p>
+    <h1>📤 Upload ke Channel</h1>
+    <p class="subtitle">Pilih video dari galeri untuk dikirim ke @vvbbvvpp</p>
 
-    <div class="button-grid">
-      <button class="media-btn" data-type="video" data-url="https://example.com/video1.mp4" data-caption="Video Pengantar">
-        ▶️ Video 1
-      </button>
-      <button class="media-btn" data-type="video" data-url="https://example.com/video2.mp4" data-caption="Video Tutorial">
-        ▶️ Video 2
-      </button>
-      <button class="media-btn" data-type="photo" data-url="https://example.com/photo1.jpg" data-caption="Foto Thumbnail">
-        🖼️ Foto 1
-      </button>
-      <button class="media-btn" data-type="photo" data-url="https://example.com/photo2.jpg" data-caption="Foto Banner">
-        🖼️ Foto 2
-      </button>
+    <div class="upload-area">
+      <input type="file" id="fileInput" accept="video/*" multiple />
+      <label for="fileInput" class="upload-label">📁 Pilih Video</label>
     </div>
 
-    <div id="status" class="status">Pilih tombol di atas</div>
+    <div id="fileList" class="file-list"></div>
+
+    <button id="uploadBtn" class="upload-btn" disabled>🚀 Upload Semua</button>
+
+    <div id="status" class="status">Pilih video terlebih dahulu</div>
   </div>
 
   <script src="app.js"></script>
