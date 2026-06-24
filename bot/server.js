@@ -6,26 +6,31 @@ const multer = require('multer');
 const cors = require('cors');
 
 const app = express();
-app.use(cors()); // Izinkan akses dari mana saja
+app.use(cors()); // Izinkan akses dari domain lain
 app.use(express.json());
 
 // Buat folder uploads jika belum ada
 const uploadDir = path.join(__dirname, 'uploads');
-if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir);
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir);
+}
 
+// Konfigurasi penyimpanan file upload
 const storage = multer.diskStorage({
   destination: uploadDir,
-  filename: (req, file, cb) => cb(null, Date.now() + '-' + file.originalname)
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + '-' + file.originalname);
+  }
 });
 const upload = multer({ storage });
 
-// Baca konfigurasi
+// Baca konfigurasi bot
 const config = JSON.parse(fs.readFileSync(path.join(__dirname, 'config.json'), 'utf8'));
 const BOT_TOKEN = config.botToken;
 const CHANNEL_ID = config.channelId;
 const TELEGRAM_API = `https://api.telegram.org/bot${BOT_TOKEN}`;
 
-// Endpoint upload file (dari aplikasi "Upload ke Bot")
+// ENDPOINT UPLOAD FILE (untuk kirim file langsung dari aplikasi)
 app.post('/upload', upload.single('file'), async (req, res) => {
   const file = req.file;
   const caption = req.body.caption || '';
@@ -35,19 +40,23 @@ app.post('/upload', upload.single('file'), async (req, res) => {
   }
 
   try {
+    // Deteksi tipe file
     const isVideo = file.mimetype.startsWith('video/');
     const method = isVideo ? 'sendVideo' : 'sendPhoto';
+    
+    // Siapkan FormData untuk Telegram
+    const FormData = require('form-data');
     const formData = new FormData();
-
     formData.append('chat_id', CHANNEL_ID);
     formData.append('caption', caption);
     formData.append(isVideo ? 'video' : 'photo', fs.createReadStream(file.path));
 
+    // Kirim ke Telegram
     const response = await axios.post(`${TELEGRAM_API}/${method}`, formData, {
       headers: { ...formData.getHeaders() }
     });
 
-    // Hapus file sementara setelah terkirim
+    // Hapus file sementara
     fs.unlinkSync(file.path);
 
     res.json({ success: true, data: response.data });
@@ -59,7 +68,7 @@ app.post('/upload', upload.single('file'), async (req, res) => {
   }
 });
 
-// Endpoint kirim via URL (tetap dipertahankan)
+// ENDPOINT KIRIM VIA URL (untuk Mini App tombol)
 app.post('/send-video', async (req, res) => {
   const { videoUrl, caption } = req.body;
   if (!videoUrl) return res.status(400).json({ error: 'videoUrl wajib diisi' });
@@ -95,6 +104,7 @@ app.post('/send-photo', async (req, res) => {
   }
 });
 
+// JALANKAN SERVER
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`✅ Bot server berjalan di port ${PORT}`);
