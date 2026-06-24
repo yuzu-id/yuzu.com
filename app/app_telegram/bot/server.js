@@ -9,58 +9,92 @@ const cors = require('cors');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Mengaktifkan CORS agar GitHub Pages diizinkan mengirim file ke backend ini
+// 1. Mengaktifkan CORS (Cross-Origin Resource Sharing)
+// Ini wajib agar frontend GitHub Pages Anda diizinkan mengirim file ke server backend Node.js ini
 app.use(cors());
 
-// Membaca file config.json untuk mengambil token keamanan
+// 2. Membaca Token dan Channel ID dari file config.json secara otomatis
 const configPath = path.join(__dirname, 'config.json');
-const config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
+let config;
+try {
+    config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
+} catch (err) {
+    console.error("Gagal membaca file bot/config.json. Pastikan file tersebut sudah dibuat.");
+    process.exit(1);
+}
 
-// Konfigurasi Multer untuk menampung sementara file 1 GB dalam kepingan memori disk
+// 3. Konfigurasi Penyimpanan Sementara (Multer)
+// File akan disimpan sementara di dalam folder 'uploads/' di server sebelum diteruskan ke Telegram
 const upload = multer({ 
     dest: 'uploads/',
-    limits: { fileSize: 1024 * 1024 * 1024 } // Batas keras 1 GB
+    limits: { fileSize: 1024 * 1024 * 1024 } // Batasan ukuran file maksimal 1 GB
 });
 
-// Endpoint pemroses pengiriman ke Telegram
-app.post('/api/upload', upload.single('file'), async (req, res) => {
-    try {
-        const file = req.file;
-        if (!file) {
-            return res.status(400).json({ error: 'Tidak ada berkas yang masuk.' });
-        }
+// Pastikan folder 'uploads/' otomatis terbuat jika belum ada
+if (!fs.existsSync('uploads/')){
+    fs.mkdirSync('uploads/');
+}
 
+// 4. Endpoint Utama untuk Menerima Berkas dari Mini App
+app.post('/api/upload', upload.single('file'), async (req, res) => {
+    const file = req.file;
+    
+    // Validasi apakah ada file yang dikirim
+    if (!file) {
+        return res.status(400).json({ success: false, error: 'Tidak ada berkas yang dipilih.' });
+    }
+
+    try {
+        // Alamat Telegram Bot API resmi untuk mengirim dokumen/video
         const telegramUrl = `https://api.telegram.org/bot${config.BOT_TOKEN}/sendDocument`;
+        
+        // Membuat struktur FormData baru untuk dikirim ke Telegram
         const formData = new FormData();
         formData.append('chat_id', config.CHANNEL_ID);
         
-        // Membuka aliran data (Stream) agar server hemat RAM saat memproses file 1 GB
+        // Menggunakan fs.createReadStream agar file besar dialirkan sedikit demi sedikit (Hemat RAM Server)
         formData.append('document', fs.createReadStream(file.path), {
-            filename: file.originalname
+            filename: file.originalname // Mempertahankan nama asli file saat tiba di Channel Telegram
         });
 
-        // Mengirimkan data stream langsung ke Telegram API server
+        console.log(`Sedang meneruskan file "${file.originalname}" ke Channel ${config.CHANNEL_ID}...`);
+
+        // Mengirimkan data ke Telegram menggunakan Axios
         const response = await axios.post(telegramUrl, formData, {
             headers: formData.getHeaders(),
-            maxContentLength: Infinity,
-            maxBodyLength: Infinity
+            maxContentLength: Infinity,  // Menghapus batasan ukuran response Axios
+            maxBodyLength: Infinity      // Menghapus batasan ukuran request Axios (Penting untuk file 1GB)
         });
 
-        // Menghapus berkas sementara dari server agar penyimpanan tidak penuh
+        // Hapus file sampah sementara di dalam folder 'uploads/' agar memori server tidak penuh
         fs.unlinkSync(file.path);
 
+        // Jika Telegram sukses menerima file
         if (response.data.ok) {
+            console.log(`File "${file.originalname}" sukses terposting ke Channel V!`);
             return res.json({ success: true, message: 'Berhasil dikirim ke Channel V.' });
         } else {
-            return res.status(500).json({ error: 'Telegram menolak berkas.' });
+            return res.status(500).json({ success: false, error: 'Telegram menolak berkas tersebut.' });
         }
 
     } catch (error) {
-        console.error(error);
-        return res.status(500).json({ error: 'Masalah pada internal server backend.' });
+        // Jika terjadi error, hapus file sementara yang gagal agar tidak menumpuk
+        if (file && fs.existsSync(file.path)) {
+            fs.unlinkSync(file.path);
+        }
+        
+        console.error("Terjadi kesalahan pada server Node.js:", error.message);
+        return res.status(500).json({ 
+            success: false, 
+            error: 'Terjadi masalah pada internal server backend Node.js.' 
+        });
     }
 });
 
+// 5. Menjalankan Server Node.js
 app.listen(PORT, () => {
-    console.log(`Server Backend Bot Yuzu berjalan di port ${PORT}`);
+    console.log(`==================================================`);
+    console.log(`🚀 Server Backend Node.js Bot Yuzu Berhasil Aktif!`);
+    console.log(`📡 Berjalan di port: ${PORT}`);
+    console.log(`==================================================`);
 });
