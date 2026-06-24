@@ -1,0 +1,13 @@
+# Konfigurasi rahasia
+bot/config.json
+
+# Dependencies
+node_modules/
+
+# File sistem
+.DS_Store
+Thumbs.db
+
+# Log
+*.log
+npm-debug.log*
