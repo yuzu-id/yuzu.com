@@ -1,38 +1,51 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Upload Mini App</title>
-  <!-- SDK Resmi Telegram WebApp -->
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
-  <link rel="stylesheet" href="style.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Telegram Mini App - Modern Light</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
 <body>
-  <div class="container">
-    <!-- Header dengan data user -->
-    <div class="user-header" id="userHeader">
-      👤 <span id="userName">Pengguna</span>
+
+    <div class="app-container">
+        <div class="user-badge" id="userBadge">👤 Menghubungkan...</div>
+
+        <div class="header-section">
+            <h1>📥 Upload ke Bot</h1>
+            <p>Kirim file Anda melalui bot Telegram (Maks. 1 GB)</p>
+        </div>
+
+        <div class="input-row">
+            <div class="file-input-wrapper">
+                <input type="file" id="filePicker">
+            </div>
+            <button id="btnSend" class="btn-send">✈️</button>
+        </div>
+
+        <div class="progress-wrapper" id="progressWrapper" style="display: none;">
+            <div class="progress-info">
+                <span id="progressStatus">Mengunggah di latar belakang...</span>
+                <span id="progressPercent" style="color: #0284c7; font-weight: bold;">0%</span>
+            </div>
+            <div class="track">
+                <div class="bar" id="progressBar"></div>
+            </div>
+        </div>
+
+        <hr>
+
+        <div class="history-section">
+            <h2>📋 Riwayat Upload Saya</h2>
+            <div class="history-list" id="historyList">
+                <div class="history-empty" id="historyEmpty">Belum ada riwayat unggahan.</div>
+            </div>
+        </div>
+
+        <button id="btnClose" class="btn-red">Tutup App</button>
     </div>
 
-    <h1>📤 Upload ke Bot</h1>
-    <p class="subtitle">Kirim file Anda melalui bot Telegram</p>
-
-    <input type="file" id="fileInput" accept="image/*,video/*,application/pdf" />
-    <button id="uploadBtn">📨 Kirim File</button>
-    <div id="status" class="status-msg"></div>
-
-    <hr />
-
-    <h3>📋 Riwayat Upload Saya</h3>
-    <ul id="historyList">
-      <li style="color:#999; text-align:center; justify-content:center;">Belum ada upload</li>
-    </ul>
-
-    <!-- Tombol bawaan Telegram untuk menutup Mini App -->
-    <button id="closeBtn" style="margin-top: 20px; background: #dc3545;">Tutup App</button>
-  </div>
-
-  <script src="app.js"></script>
+    <script src="app.js"></script>
 </body>
 </html>
